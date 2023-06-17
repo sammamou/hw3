@@ -1,5 +1,7 @@
 import java.util.Arrays;
 import java.util.Iterator;
+import java.lang.reflect.Method;
+
 
 public class ArrayStack<T extends  Cloneable> implements Stack<T> {
     public T[] stack;
@@ -65,17 +67,18 @@ public class ArrayStack<T extends  Cloneable> implements Stack<T> {
     }
 
     @Override
-    public ArrayStack<T> clone(){
+    public ArrayStack<T> clone() {
         try {
-            int i = head;
-            ArrayStack copy = (ArrayStack) super.clone();
+            ArrayStack<T> copy = (ArrayStack<T>) super.clone();
             copy.stack = stack.clone();
-            for (T element : stack){
-                copy.stack[i]= element.clone();
-                i--;
+            for (int i = 0; i <= head; i++) {
+                if (stack[i] instanceof Cloneable) {
+                    Method cloneMethod = stack[i].getClass().getMethod("clone");
+                    copy.stack[i] = (T) cloneMethod.invoke(stack[i]);
+                }
             }
             return copy;
-        } catch (CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException | ReflectiveOperationException e) {
             return null;
         }
     }
