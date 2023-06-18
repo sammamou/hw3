@@ -39,6 +39,9 @@ public class Song implements Cloneable {
         this.realtime = convertIntToString(duration);
     }
 
+    public String getName() {
+        return name;
+    }
 
     public String getArtist() {
         return artist;
@@ -50,6 +53,10 @@ public class Song implements Cloneable {
 
     public int getDuration() {
         return duration;
+    }
+
+    public int getPlaceInPlaylist() {
+        return placeInPlaylist;
     }
 
     public void setPlaceInPlaylist(int placeInPlaylist) {

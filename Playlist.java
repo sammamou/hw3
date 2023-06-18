@@ -1,5 +1,6 @@
 import javax.swing.plaf.PanelUI;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Iterator;
 
@@ -10,6 +11,7 @@ public class Playlist implements FilteredSongIterable, Cloneable, OrderedSongIte
     private boolean genre;
     private boolean artist;
     private boolean duration;
+    private ScanningOrder scanningOrder;
 
     public Playlist() {
         songs = new ArrayList<>();
@@ -54,7 +56,7 @@ public class Playlist implements FilteredSongIterable, Cloneable, OrderedSongIte
         }
         return false;
     }
-
+    @Override
     public Playlist clone(){
         try {
             int index = 0;
@@ -136,6 +138,7 @@ public class Playlist implements FilteredSongIterable, Cloneable, OrderedSongIte
         for (int i = 0; i<songs.size(); i++){
             if (!(artistName.equals(songs.get(i).getArtist()))){
                 removeSong(songs.get(i));
+                i = -1;
             }
         }
         artist = true;
@@ -151,6 +154,7 @@ public class Playlist implements FilteredSongIterable, Cloneable, OrderedSongIte
         for (int i = 0; i < songs.size(); i++){
             if (!(genre.equals(songs.get(i).getGenre()))){
                 removeSong(songs.get(i));
+                i = -1;
             }
         }
         this.genre = true;
@@ -163,13 +167,26 @@ public class Playlist implements FilteredSongIterable, Cloneable, OrderedSongIte
         for (int i = 0; i<songs.size(); i++){
             if (songs.get(i).getDuration() > maxDuration){
                 removeSong(songs.get(i));
+                i = -1;
             }
         }
         duration = true;
     }
 
     @Override
-    public void setScanningOrder(ScanningOrder order){};
+    public void setScanningOrder(ScanningOrder order){
+        this.scanningOrder = order;
+        if (order.equals(ScanningOrder.NAME)) {
+            Comparator<Song> byArtist = Comparator.comparing(Song::getName).thenComparing(Song::getArtist);
+            songs.sort(byArtist);
+        } else if (order.equals(ScanningOrder.ADDING)) {
+            Comparator<Song> byOrder = Comparator.comparing(Song::getPlaceInPlaylist);
+            songs.sort(byOrder);
+        } else if (order.equals(ScanningOrder.DURATION)) {
+            Comparator<Song> byTime = Comparator.comparing(Song::getDuration).thenComparing(Song::getName).thenComparing(Song::getArtist);
+            songs.sort(byTime);
+        }
+    }
 
     @Override
     public Iterator<Song> iterator() {
