@@ -1,69 +1,62 @@
-import java.util.Arrays;
-import java.util.Iterator;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 
-
-public class ArrayStack<T extends  Cloneable> implements Stack<T> {
+public class ArrayStack<T extends Cloneable> implements Stack<T> {
     public T[] stack;
     public int head;
     public int size;
-    public int counter;
 
-    public ArrayStack(int size) throws StackException{
+    public ArrayStack(int size) throws StackException {
         if (size < 0) {
             throw new NegativeCapacityException();
         }
         this.stack = (T[]) new Cloneable[size];
         this.head = -1;
         this.size = size;
-        this.counter = head;
     }
 
     @Override
-    public void push(T element) throws StackException{
+    public void push(T element) throws StackException {
         head++;
-        if (!(head < size)){
+        if (!(head < size)) {
             head--;
             throw new StackOverflowException();
-        }else {
+        } else {
             this.stack[head] = element;
-            counter = head;
         }
     }
 
-
     @Override
-    public T pop() throws StackException{
-        if (head == -1){
+    public T pop() throws StackException {
+        if (head == -1) {
             throw new EmptyStackException();
         }
         T elementToReturn = this.stack[head];
-        this.stack[head]= null;
+        this.stack[head] = null;
         head--;
-        counter = head;
         return elementToReturn;
     }
 
     @Override
-    public T peek(){
-        if (head == -1){
+    public T peek() {
+        if (head == -1) {
             throw new EmptyStackException();
         }
         return this.stack[head];
     }
 
     @Override
-    public int size(){
+    public int size() {
         return (head + 1);
     }
 
-    public boolean isEmpty(){
-        return head==-1;
+    public boolean isEmpty() {
+        return head == -1;
     }
 
     @Override
-    public Iterator<T> iterator(){
-        return new StackIterator<T>();
+    public Iterator<T> iterator() {
+        return new StackIterator();
     }
 
     @Override
@@ -83,17 +76,22 @@ public class ArrayStack<T extends  Cloneable> implements Stack<T> {
         }
     }
 
-    public class StackIterator<T> implements Iterator<T>{
+    public class StackIterator implements Iterator<T> {
+        private int currentIndex;
 
-        @Override
-        public boolean hasNext(){
-            return (counter >= 0);
+        public StackIterator() {
+            currentIndex = head;
         }
 
         @Override
-        public T next(){
-            T value = (T) stack[counter];
-            counter --;
+        public boolean hasNext() {
+            return currentIndex >= 0;
+        }
+
+        @Override
+        public T next() {
+            T value = stack[currentIndex];
+            currentIndex--;
             return value;
         }
     }

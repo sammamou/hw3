@@ -11,8 +11,6 @@ public class Song implements Cloneable {
     private String artist;
     private Genre genre;
     private int duration;
-    private String realtime;
-    private int placeInPlaylist;
 
 
     public Song(String name, String artist, Genre genre, int duration) {
@@ -20,8 +18,6 @@ public class Song implements Cloneable {
         this.artist = artist;
         this.genre = genre;
         this.duration = duration;
-        this.realtime = convertIntToString(duration);
-        this.placeInPlaylist = 0;
     }
 
 
@@ -30,13 +26,11 @@ public class Song implements Cloneable {
         this.artist = songToClone.artist;
         this.genre = songToClone.genre;
         this.duration = songToClone.duration;
-        this.realtime = songToClone.realtime;
-        this.placeInPlaylist = songToClone.placeInPlaylist;
     }
 
     public void setDuration(int duration) {
         this.duration = duration;
-        this.realtime = convertIntToString(duration);
+
     }
 
     public String getName() {
@@ -55,24 +49,16 @@ public class Song implements Cloneable {
         return duration;
     }
 
-    public int getPlaceInPlaylist() {
-        return placeInPlaylist;
-    }
-
-    public void setPlaceInPlaylist(int placeInPlaylist) {
-        this.placeInPlaylist = placeInPlaylist;
-    }
 
     public String convertIntToString(int duration){
-        String minutes = String.valueOf(duration/100);
-        String second;
-        if (duration%100 < 10){
-            second = "0" + String.valueOf(duration % 100);
-        }else {
-            second = String.valueOf(duration % 100);
+        int minutes = duration / 60;
+        int second = duration % 60;
+        String minutesString = String.valueOf(minutes);
+        String secondString = String.valueOf(second);
+        if (second<10){
+            secondString = "0"+secondString;
         }
-        String durationString = minutes + ":" + second;
-        return durationString;
+        return minutesString + ":" + secondString;
     }
 
 
@@ -83,7 +69,7 @@ public class Song implements Cloneable {
     }
     @Override
     public String toString() {
-        return "(" + name + ", " + artist + ", " + genre + ", " + realtime + ")";
+        return name + ", " + artist + ", " + genre + ", " + convertIntToString(duration);
     }
 
     @Override
